@@ -1,7 +1,13 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
+/// <summary>
+/// Class that will manage the states of the game, keep the reference to the scriptableObjects
+/// and the spawned characters
+/// </summary>
 public class GhaterYourPeople : MonoBehaviour
 {
     /// <summary>
@@ -42,27 +48,26 @@ public class GhaterYourPeople : MonoBehaviour
 
     [Header("Set in inspector")]
     public CharactersScriptableObject characters_SO;
-    [Tooltip("time after while the first character will be spawned")]
-    public float startTime = 5;
-    [Tooltip("Time every new character is spawn")]
-    public float creationTimeRate = 10;
 
-    public GameObject doorPosition;
-    
+    public int hearts;
+    public int threats;
+
+    public Dictionary<Vector3, GameObject> characterLocations;
+
     public void Awake()
     {
         S = this;
     }
 
-    public void Start()
+    public static bool AddCharacterLocation(Vector3 position, GameObject gameObject)
     {
-        InvokeRepeating("GenerateNewCharacters", startTime, creationTimeRate);
+        if (S.characterLocations == null)
+            S.characterLocations = new Dictionary<Vector3, GameObject>();
+        return false;
     }
 
-    public void GenerateNewCharacters()
+    public static bool IsValidPosition(Vector3 position)
     {
-        GameObject character = Instantiate(characters_SO.GetCharacter());
-        character.transform.position = doorPosition.transform.position;
+        return false;
     }
-
 }
