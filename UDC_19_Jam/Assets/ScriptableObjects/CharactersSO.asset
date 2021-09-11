@@ -13,6 +13,24 @@ MonoBehaviour:
   m_Name: CharactersSO
   m_EditorClassIdentifier: 
   characterPrefabs:
-  - {fileID: 6177671265265968391, guid: 9b2925d6aab8c064f87c4f9a2dfa8f9a, type: 3}
-  - {fileID: 7293023297520656986, guid: e1f1c5798df528049aa537d9572dd86a, type: 3}
-  - {fileID: 7889733855934975886, guid: cd48f545b657b4c4b9e33f4f97548d65, type: 3}
+  - prefab: {fileID: 6177671265265968391, guid: 9b2925d6aab8c064f87c4f9a2dfa8f9a, type: 3}
+    Tipology: 1
+    societyGainMax: 0
+    societyGainMin: 0
+    threat: 0
+    potiveBindParticleEffect: {fileID: 0}
+    negativeBindParticleEffect: {fileID: 0}
+  - prefab: {fileID: 7293023297520656986, guid: e1f1c5798df528049aa537d9572dd86a, type: 3}
+    Tipology: 2
+    societyGainMax: 0
+    societyGainMin: 0
+    threat: 0
+    potiveBindParticleEffect: {fileID: 0}
+    negativeBindParticleEffect: {fileID: 0}
+  - prefab: {fileID: 7889733855934975886, guid: cd48f545b657b4c4b9e33f4f97548d65, type: 3}
+    Tipology: 3
+    societyGainMax: 0
+    societyGainMin: 0
+    threat: 0
+    potiveBindParticleEffect: {fileID: 0}
+    negativeBindParticleEffect: {fileID: 0}

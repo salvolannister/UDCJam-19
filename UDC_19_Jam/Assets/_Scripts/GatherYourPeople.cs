@@ -8,7 +8,7 @@ using UnityEngine;
 /// Class that will manage the states of the game, keep the reference to the scriptableObjects
 /// and the spawned characters
 /// </summary>
-public class GhaterYourPeople : MonoBehaviour
+public class GatherYourPeople : MonoBehaviour
 {
     /// <summary>
     /// TODO: change the name of the gamestate with something more appropriate
@@ -26,7 +26,7 @@ public class GhaterYourPeople : MonoBehaviour
         all = 0xFFFFFFF // 11111111111111111111111111111111
     }
 
-    public static GhaterYourPeople S
+    public static GatherYourPeople S
     {
         get
         {
@@ -44,7 +44,7 @@ public class GhaterYourPeople : MonoBehaviour
         }
     }
 
-    private static GhaterYourPeople _S;
+    private static GatherYourPeople _S;
 
     [Header("Set in inspector")]
     public CharactersScriptableObject characters_SO;
@@ -52,22 +52,56 @@ public class GhaterYourPeople : MonoBehaviour
     public int hearts;
     public int threats;
 
-    public Dictionary<Vector3, GameObject> characterLocations;
+    public Dictionary<KeyValuePair<int, int>, Character> characterLocations;
+    public int[,] grid;
 
+
+    private const int GRID_DIM = 10;
     public void Awake()
     {
         S = this;
+
+        characterLocations = new Dictionary<KeyValuePair<int, int>, Character>();
+        grid = new int[GRID_DIM, GRID_DIM];
+        InitGrid();
     }
 
-    public static bool AddCharacterLocation(Vector3 position, GameObject gameObject)
+    private void InitGrid()
     {
-        if (S.characterLocations == null)
-            S.characterLocations = new Dictionary<Vector3, GameObject>();
+        for (int i = 0; i < GRID_DIM; i++)
+        {
+            for (int x = 0; x < GRID_DIM; x++)
+            {
+                grid[i, x] = 0;
+            }
+        }
+    }
+
+    public static bool AddCharacterLocation(Vector3 position, Character character)
+    {
+        int roundX = Mathf.RoundToInt(position.x);
+        int roundY = Mathf.RoundToInt(position.y);
+
+
+        if (S.grid[roundX, roundY] == 0)
+        {
+            S.grid[roundX, roundY] = 1;
+            return true;
+        }
         return false;
     }
 
-    public static bool IsValidPosition(Vector3 position)
+    public static bool IsPositionValid(Vector3 position)
     {
+        int roundX = Mathf.RoundToInt(position.x);
+        int roundY = Mathf.RoundToInt(position.y);
+        position.x = roundX;
+        position.y = roundY;
+
+        if (S.grid[roundX, roundY] == 0)
+        {
+            return true;
+        }
         return false;
     }
 }

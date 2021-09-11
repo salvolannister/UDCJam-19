@@ -13,23 +13,38 @@ public class Spawner : MonoBehaviour
     public Collider2D spawner;
     private float spawnerWidth;
     private CharactersScriptableObject characters_SO;
+    private CharacterController characterController;
+
     public void Start()
     {
-        characters_SO = GhaterYourPeople.S.characters_SO;
+        characters_SO = GatherYourPeople.S.characters_SO;
         spawnerWidth = spawner.bounds.max.x;
-        InvokeRepeating("GenerateNewCharacters", startTime, creationTimeRate);
+        characterController = GenerateNewCharacters();
     }
 
-    public void GenerateNewCharacters()
+    private void Update()
     {
-        GameObject character = Instantiate(characters_SO.GetCharacter());
-        character.transform.position = getNewSpawnPosition();
+        if (characterController  && characterController.hasReachedDestination)
+        {
+            characterController = GenerateNewCharacters();
+        }
+    }
+
+    public CharacterController GenerateNewCharacters()
+    {
+        Character character = characters_SO.GetCharacter();
+        GameObject characterPrefab = Instantiate(character.prefab);
+        characterPrefab.transform.position = getNewSpawnPosition();
+
+        CharacterController controller = characterPrefab.GetComponent<CharacterController>();
+        controller.character = character;
+        return controller;
     }
 
     private Vector3 getNewSpawnPosition()
     {
-
-        return new Vector3(Random.Range(0, spawnerWidth), spawner.bounds.center.y, 0);
+        float xRound = Mathf.Round(Random.Range(0, spawnerWidth));
+        return new Vector3(xRound, spawner.bounds.center.y, 0);
 
     }
 }

@@ -6,9 +6,10 @@ using UnityEngine;
 [System.Serializable]
 public class CharactersScriptableObject : ScriptableObject
 {
-    public GameObject[] characterPrefabs;
+    [SerializeField]
+    public Character[] characterPrefabs;
 
-    public GameObject GetCharacter()
+    public Character GetCharacter()
     {
         int n = Random.Range(0, characterPrefabs.Length);
         return characterPrefabs[n];
