@@ -13,13 +13,14 @@ public class Spawner : MonoBehaviour
     public Collider2D spawner;
     private float spawnerWidth;
     private CharactersScriptableObject characters_SO;
-    private CharacterController characterController;
+    private CharacterMovement characterController;
 
     public void Start()
     {
         characters_SO = GatherYourPeople.S.characters_SO;
-        spawnerWidth = spawner.bounds.max.x;
+        spawnerWidth = Mathf.Round(spawner.bounds.max.x);
         characterController = GenerateNewCharacters();
+        CharacterMovement.width = spawnerWidth;
     }
 
     private void Update()
@@ -30,13 +31,13 @@ public class Spawner : MonoBehaviour
         }
     }
 
-    public CharacterController GenerateNewCharacters()
+    public CharacterMovement GenerateNewCharacters()
     {
         Character character = characters_SO.GetCharacter();
         GameObject characterPrefab = Instantiate(character.prefab);
         characterPrefab.transform.position = getNewSpawnPosition();
 
-        CharacterController controller = characterPrefab.GetComponent<CharacterController>();
+        CharacterMovement controller = characterPrefab.GetComponent<CharacterMovement>();
         controller.character = character;
         return controller;
     }

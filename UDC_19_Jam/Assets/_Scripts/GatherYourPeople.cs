@@ -49,19 +49,18 @@ public class GatherYourPeople : MonoBehaviour
     [Header("Set in inspector")]
     public CharactersScriptableObject characters_SO;
 
-    public int hearts;
-    public int threats;
+    public static int LIFES = 3;
+    public static int THREATS;
 
-    public Dictionary<KeyValuePair<int, int>, Character> characterLocations;
+    public Dictionary<Vector2, Character> characterLocations;
     public int[,] grid;
-
-
+    public int MAX_SIMILAR = 3;
     private const int GRID_DIM = 10;
     public void Awake()
     {
         S = this;
 
-        characterLocations = new Dictionary<KeyValuePair<int, int>, Character>();
+        characterLocations = new Dictionary<Vector2, Character>();
         grid = new int[GRID_DIM, GRID_DIM];
         InitGrid();
     }
@@ -86,9 +85,93 @@ public class GatherYourPeople : MonoBehaviour
         if (S.grid[roundX, roundY] == 0)
         {
             S.grid[roundX, roundY] = 1;
+            S.characterLocations.Add(new Vector2(roundX, roundY), character);
+            S.CalculateLifesAndThreats(new Vector2(roundX, roundY), character);
+
             return true;
         }
         return false;
+    }
+
+    private void CalculateLifesAndThreats(Vector2 addedPos, Character addedCharacter)
+    {
+        // calculate lifes and threats
+        int totalSimilar = 0;
+        int totalDifferent = 0;
+        int X = (int)addedPos.x;
+        int Y = (int)addedPos.y;
+        Character.tipology addedTipology = addedCharacter.Tipology;
+
+        // TODO: Improve this part of code
+        if (X < GRID_DIM - 1)
+        {
+            if (Y > 0)
+                CheckCell(ref totalSimilar, ref totalDifferent, X + 1, Y - 1, addedTipology);
+            CheckCell(ref totalSimilar, ref totalDifferent, X + 1, Y, addedTipology);
+            if (Y < GRID_DIM - 1)
+                CheckCell(ref totalSimilar, ref totalDifferent, X + 1, Y + 1, addedTipology);
+
+        }
+
+        if (Y > 0)
+            CheckCell(ref totalSimilar, ref totalDifferent, X, Y - 1, addedTipology);
+        if (Y < GRID_DIM - 1)
+            CheckCell(ref totalSimilar, ref totalDifferent, X, Y + 1, addedTipology);
+
+        if (X != 0)
+        {
+            if (Y > 0)
+                CheckCell(ref totalSimilar, ref totalDifferent, X - 1, Y - 1, addedTipology);
+            CheckCell(ref totalSimilar, ref totalDifferent, X - 1, Y, addedTipology);
+            if (Y < GRID_DIM - 1)
+                CheckCell(ref totalSimilar, ref totalDifferent, X - 1, Y + 1, addedTipology);
+        }
+
+
+        // udpate lifes and threats
+        if (totalSimilar > MAX_SIMILAR)
+        {
+            THREATS += 1;
+        }
+        else
+        {
+            LIFES += addedCharacter.societyGainMin;
+        }
+
+
+    }
+
+
+    void CheckCell(ref int totalSimilar, ref int totalDifferent, int X, int Y, Character.tipology addedTipology)
+    {
+        if (grid[X, Y] != 0)
+        {
+            if (CheckSimilarity(new Vector2(X - 1, Y + 1), addedTipology))
+            {
+                totalSimilar += 1;
+            }
+            else
+            {
+                totalDifferent += 1;
+            }
+        }
+    }
+    private bool CheckSimilarity(Vector2 values, Character.tipology myTipology)
+    {
+        if (characterLocations.TryGetValue(values, out Character neighbor))
+        {
+            Debug.Log("Neig found " + neighbor.Tipology);
+            if (neighbor.Tipology == myTipology)
+                return true;
+            else
+                return false;
+        }
+        else
+        {
+            Debug.LogWarning("no neigh found when cheking neighbourhood!!!");
+            return false;
+        }
+
     }
 
     public static bool IsPositionValid(Vector3 position)

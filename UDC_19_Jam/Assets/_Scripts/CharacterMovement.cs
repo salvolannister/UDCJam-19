@@ -3,15 +3,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CharacterController : MonoBehaviour
+public class CharacterMovement : MonoBehaviour
 {
     [SerializeField]
-    public static float height = 2.89f; // screen borders 
+    public static float height = 3f; // screen borders 
     [SerializeField]
-    public static float width = 5.67f;  // screen borders
+    public static float width = 6f;  // screen borders
 
     public float fallTime = 0.5f;
-    public float speed = 2;
+    public float speed = 3;
     private float xMov = 0;
     private float yMov = 0;
     private float timeRead = 0;
@@ -30,7 +30,12 @@ public class CharacterController : MonoBehaviour
     }
     void Start()
     {
+        GetWidth();
+    }
 
+    private void GetWidth()
+    {
+       
     }
 
     // Update is called once per frame
@@ -43,8 +48,8 @@ public class CharacterController : MonoBehaviour
 
             if (xMov != 0)
             {
-                float delta = xMov * Time.deltaTime * speed;
-
+                float delta = xMov * Time.deltaTime;
+                
                 transform.position += new Vector3(delta, 0, 0);
                 if (transform.position.x > width || transform.position.x < 0 || !CheckIfPositionIsValid())
                 {
@@ -81,8 +86,15 @@ public class CharacterController : MonoBehaviour
         if (transform.position.y <= 0 + offSet  || !moving)
         {
             hasReachedDestination = true;
-            GatherYourPeople.AddCharacterLocation(transform.position, character);
-            Debug.Log(" added  transform position " + transform.position);
+            // RoundX pos
+            float roundedX = Mathf.Round(transform.position.x);
+            float roundedY = Mathf.Round(transform.position.y);
+            transform.position = new Vector3(roundedX, roundedY, 0);
+            if(GatherYourPeople.AddCharacterLocation(transform.position, character))
+            {
+                Debug.Log(" added  transform position " + transform.position);
+            }
+            
         }
       
 
