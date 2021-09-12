@@ -1,2 +1,6 @@
 "loop house in a forest" by HorrorPen licensed CC-BY 3.0: https://opengameart.org/content/loop-house-in-a-forest
 NavMeshComponents Plus - https://github.com/h8man/NavMeshPlus
+
+https://opengameart.org/content/wood-floor
+
+https://opengameart.org/content/24x32-black-character-pack
