@@ -112,3 +112,11 @@ MonoBehaviour:
   fallTime: 1
   speed: 2
   hasReachedDestination: 0
+  character:
+    prefab: {fileID: 0}
+    Tipology: 0
+    societyGainMax: 0
+    societyGainMin: 0
+    threat: 0
+    potiveBindParticleEffect: {fileID: 0}
+    negativeBindParticleEffect: {fileID: 0}

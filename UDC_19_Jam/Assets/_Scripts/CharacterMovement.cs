@@ -90,7 +90,7 @@ public class CharacterMovement : MonoBehaviour
             float roundedX = Mathf.Round(transform.position.x);
             float roundedY = Mathf.Round(transform.position.y);
             transform.position = new Vector3(roundedX, roundedY, 0);
-            if(GatherYourPeople.AddCharacterLocation(transform.position, character))
+            if(GatherYourPeople.AddCharacterLocation(transform.position, this))
             {
                 Debug.Log(" added  transform position " + transform.position);
             }

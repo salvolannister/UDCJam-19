@@ -16,6 +16,6 @@ public class LifesGUI : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        text.text = GatherYourPeople.LIFES >= 0 ? "Lifes " + GatherYourPeople.LIFES : "";
+        text.text = GatherYourPeople.LIFES >= 0 ? "Score " + GatherYourPeople.LIFES : "";
     }
 }

@@ -15,12 +15,19 @@ public class Spawner : MonoBehaviour
     private CharactersScriptableObject characters_SO;
     private CharacterMovement characterController;
 
+
     public void Start()
     {
         characters_SO = GatherYourPeople.S.characters_SO;
         spawnerWidth = Mathf.Round(spawner.bounds.max.x);
         characterController = GenerateNewCharacters();
         CharacterMovement.width = spawnerWidth;
+        GatherYourPeople.OnCombo += RestartGeneration;
+    }
+
+    private void OnDestroy()
+    {
+        GatherYourPeople.OnCombo -= RestartGeneration;
     }
 
     private void Update()
@@ -29,6 +36,11 @@ public class Spawner : MonoBehaviour
         {
             characterController = GenerateNewCharacters();
         }
+    }
+
+    public void RestartGeneration()
+    {
+        characterController = GenerateNewCharacters();
     }
 
     public CharacterMovement GenerateNewCharacters()
@@ -48,4 +60,6 @@ public class Spawner : MonoBehaviour
         return new Vector3(xRound, spawner.bounds.center.y, 0);
 
     }
+
+
 }
