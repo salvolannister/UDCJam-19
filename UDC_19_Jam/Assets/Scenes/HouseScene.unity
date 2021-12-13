@@ -2294,6 +2294,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Spawner
       objectReference: {fileID: 0}
+    - target: {fileID: 7690995083508239602, guid: 35979ce236744134d804e314df221605, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7690995083508239606, guid: 35979ce236744134d804e314df221605, type: 3}
       propertyPath: m_LocalScale.x
       value: 9.664501
@@ -2316,7 +2320,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7690995084892370549, guid: 35979ce236744134d804e314df221605, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7690995084892370554, guid: 35979ce236744134d804e314df221605, type: 3}
       propertyPath: m_Enabled
