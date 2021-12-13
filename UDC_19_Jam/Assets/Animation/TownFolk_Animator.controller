@@ -57,7 +57,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: tomFolk
+  m_Name: walk_front
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -179,7 +179,7 @@ AnimatorController:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Townfolk-Child-M_0
+  m_Name: TownFolk_Animator
   serializedVersion: 5
   m_AnimatorParameters:
   - m_Name: walking
@@ -315,7 +315,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: tomFolk_w_left
+  m_Name: walk_left
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -369,7 +369,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: tom_walk_right
+  m_Name: walk_right
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
