@@ -27,7 +27,7 @@ MonoBehaviour:
     threat: 2
     potiveBindParticleEffect: {fileID: 0}
     negativeBindParticleEffect: {fileID: 0}
-  - prefab: {fileID: 7889733855934975886, guid: cd48f545b657b4c4b9e33f4f97548d65, type: 3}
+  - prefab: {fileID: 5965577960797313039, guid: c284903e33af2e446af8371c4bc8895d, type: 3}
     Tipology: 3
     societyGainMax: 3
     societyGainMin: 1
