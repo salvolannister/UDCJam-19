@@ -69,11 +69,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5965577960797313039, guid: c284903e33af2e446af8371c4bc8895d, type: 3}
       propertyPath: m_Name
-      value: OldFolk
+      value: OldFolk Variant
       objectReference: {fileID: 0}
     - target: {fileID: 5965577960797313039, guid: c284903e33af2e446af8371c4bc8895d, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c284903e33af2e446af8371c4bc8895d, type: 3}
