@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: CharactersSO
   m_EditorClassIdentifier: 
   characterPrefabs:
-  - prefab: {fileID: 6177671265265968391, guid: 9b2925d6aab8c064f87c4f9a2dfa8f9a, type: 3}
+  - prefab: {fileID: 8888626687831711580, guid: 534fc92f6cf1474419b580ba33b8ee9f, type: 3}
     Tipology: 0
     societyGainMax: 4
     societyGainMin: 1
