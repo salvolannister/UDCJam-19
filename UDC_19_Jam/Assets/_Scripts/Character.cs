@@ -7,12 +7,12 @@ public class Character
 {
     public enum tipology
     {
-        comunist = 0,
+        queen = 0,
         lgbtquia = 1,
         white = 2,
         black = 3,
-        rightWingPolitician = 4,
-        chineese = 5
+        thief = 4,
+        standard = 5
     }
 
     public GameObject prefab;

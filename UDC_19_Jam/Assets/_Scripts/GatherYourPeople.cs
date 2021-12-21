@@ -10,6 +10,11 @@ using UnityEngine;
 /// </summary>
 public class GatherYourPeople : MonoBehaviour
 {
+    public enum cellState
+    {
+        EMPTY= 0,
+        FULL =1
+    }
     /// <summary>
     /// TODO: change the name of the gamestate with something more appropriate
     /// </summary>
@@ -365,7 +370,7 @@ public class GatherYourPeople : MonoBehaviour
         position.x = roundX;
         position.y = roundY;
 
-        if (S.grid[roundX, roundY] == 0)
+        if (S.grid[roundX, roundY] == ((int)cellState.EMPTY))
         {
             return true;
         }
