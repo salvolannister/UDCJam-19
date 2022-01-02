@@ -12,8 +12,8 @@ public class GatherYourPeople : MonoBehaviour
 {
     public enum cellState
     {
-        EMPTY= 0,
-        FULL =1
+        EMPTY = 0,
+        FULL = 1
     }
     /// <summary>
     /// TODO: change the name of the gamestate with something more appropriate
@@ -71,7 +71,8 @@ public class GatherYourPeople : MonoBehaviour
     public int MAX_SIMILAR = 3;
     public int MAX_DIFF = 3;
 
-    private const int GRID_DIM = 10;
+    private const int GRID_DIM_Y = 10;
+    private const int GRID_DIM_X = 7;
     private bool combo = false;
     public static Action OnCombo;
     public void Awake()
@@ -79,17 +80,18 @@ public class GatherYourPeople : MonoBehaviour
         S = this;
 
         characterLocations = new Dictionary<Vector2, CharacterMovement>();
-        grid = new int[GRID_DIM, GRID_DIM];
+        grid = new int[GRID_DIM_Y, GRID_DIM_Y];
         InitGrid();
     }
 
     private void InitGrid()
     {
-        for (int i = 0; i < GRID_DIM; i++)
+        int emptyState = (int)cellState.EMPTY;
+        for (int i = 0; i < GRID_DIM_Y; i++)
         {
-            for (int x = 0; x < GRID_DIM; x++)
+            for (int x = 0; x < GRID_DIM_X; x++)
             {
-                grid[i, x] = 0;
+                grid[i, x] = emptyState;
             }
         }
     }
@@ -100,15 +102,84 @@ public class GatherYourPeople : MonoBehaviour
         int roundY = Mathf.RoundToInt(position.y);
 
 
-        if (S.grid[roundX, roundY] == 0)
+        if (S.grid[roundX, roundY] == ((int)cellState.EMPTY))
         {
-            S.grid[roundX, roundY] = 1;
-            S.characterLocations.Add(new Vector2(roundX, roundY), character);
-            S.CalculateCombo(new Vector2(roundX, roundY), character);
+            Vector2 roundedPos = new Vector2(roundX, roundY);
+            S.grid[roundX, roundY] = ((int)cellState.FULL);
+            S.characterLocations.Add(roundedPos, character);
+            //  S.CalculateCombo(roundedPos, character);
+            Vector2 foundPos = Vector2.zero;
+            // checks for similar character
+            int equalFound = S.CalculateCombo(roundedPos, roundedPos, character.character.Tipology, 0, ref foundPos);
 
+            if (equalFound == 3)
+            {
+                //make the characters disappear
+                S.MakeCombo(eCombos.h_center, (int)foundPos.x, (int)foundPos.y, character);
+            }
             return true;
         }
         return false;
+    }
+
+    public int CalculateCombo(Vector2 currentPos, Vector2 caller, Character.tipology tipology, int similarFound, ref Vector2 foundPos)
+    {
+
+        Debug.Log(" checking position " + currentPos + "with similar found " + similarFound);
+
+        if (CheckSimilarity(currentPos, tipology))
+        {
+            similarFound++;
+        }
+        else
+        {
+            return similarFound;
+        }
+
+
+        if (similarFound == 3)
+        {
+            // segni la posizione del simile tra i due
+            foundPos = caller;
+            Debug.Log(" Match found: it s working  " + foundPos.x + " " + foundPos.y);
+            return similarFound;
+        }
+
+
+
+        // check right side
+        Vector2 nextPos = currentPos;
+        nextPos.x += 1;
+        if (!isOutOfBorder(nextPos.x, nextPos.y) && caller != nextPos)
+        {
+            similarFound = CalculateCombo(nextPos, currentPos, tipology, similarFound, ref foundPos);
+        }
+
+        //check left side
+        nextPos = currentPos;
+        nextPos.x -= 1;
+        if (!isOutOfBorder(nextPos.x, nextPos.y) && caller != nextPos)
+        {
+            similarFound = CalculateCombo(nextPos, currentPos, tipology, similarFound, ref foundPos);
+        }
+
+        return similarFound;
+    }
+
+    /// <summary>
+    /// Determines whether [the cell is valid] giving the a position in the grid.
+    /// </summary>
+    /// <param name="x">The x.</param>
+    /// <param name="y">The y.</param>
+    /// <returns>
+    ///   <c>true</c> if [is cell valid] [the specified x]; otherwise, <c>false</c>.
+    /// </returns>
+    bool isOutOfBorder(float x, float y)
+    {
+        if (x == 7 || x < 0)
+            return true;
+        else
+            return false;
     }
 
     private void CalculateCombo(Vector2 addedPos, CharacterMovement addedCharacter)
@@ -137,7 +208,7 @@ public class GatherYourPeople : MonoBehaviour
             }
 
         }
-        else if (X == GRID_DIM - 1)
+        else if (X == GRID_DIM_Y - 1)
         {
             if (CheckCell(ref totalSimilar, ref totalDifferent, X - 1, Y, addedTipology) && CheckCell(ref totalSimilar, ref totalDifferent, X - 2, Y, addedTipology))
             {
@@ -169,7 +240,7 @@ public class GatherYourPeople : MonoBehaviour
 
                 }
             }
-            else if (X + 2 <= GRID_DIM - 1)
+            else if (X + 2 <= GRID_DIM_Y - 1)
             {
                 if (CheckCell(ref totalSimilar, ref totalDifferent, X + 1, Y, addedTipology) && CheckCell(ref totalSimilar, ref totalDifferent, X + 2, Y, addedTipology))
                 {
@@ -182,35 +253,7 @@ public class GatherYourPeople : MonoBehaviour
 
 
 
-        // shift the icons and the character
 
-        // calculate lifes and threats
-
-
-        // TODO: Improve this part of code
-        //if (X < GRID_DIM - 1)
-        //{
-        //    if (Y > 0)
-        //        CheckCell(ref totalSimilar, ref totalDifferent, X + 1, Y - 1, addedTipology);
-        //    CheckCell(ref totalSimilar, ref totalDifferent, X + 1, Y, addedTipology);
-        //    if (Y < GRID_DIM - 1)
-        //        CheckCell(ref totalSimilar, ref totalDifferent, X + 1, Y + 1, addedTipology);
-
-        //}
-
-        //if (Y > 0)
-        //    CheckCell(ref totalSimilar, ref totalDifferent, X, Y - 1, addedTipology);
-        //if (Y < GRID_DIM - 1)
-        //    CheckCell(ref totalSimilar, ref totalDifferent, X, Y + 1, addedTipology);
-
-        //if (X != 0)
-        //{
-        //    if (Y > 0)
-        //        CheckCell(ref totalSimilar, ref totalDifferent, X - 1, Y - 1, addedTipology);
-        //    CheckCell(ref totalSimilar, ref totalDifferent, X - 1, Y, addedTipology);
-        //    if (Y < GRID_DIM - 1)
-        //        CheckCell(ref totalSimilar, ref totalDifferent, X - 1, Y + 1, addedTipology);
-        //}
 
         if (combo)
         {
@@ -229,7 +272,7 @@ public class GatherYourPeople : MonoBehaviour
 
             combo = false;
         }
-            
+
 
 
     }
@@ -250,6 +293,8 @@ public class GatherYourPeople : MonoBehaviour
                     RemoveCharacter(tmp);
                     tmp.x = X + 2;
                     RemoveCharacter(tmp);
+
+                    // move characters that were above 
                     break;
                 }
             case (eCombos.h_right):
@@ -268,7 +313,7 @@ public class GatherYourPeople : MonoBehaviour
                 {
                     grid[X, Y] = grid[X - 1, Y] = grid[X + 1, Y] = 0;
 
-                    RemoveCharacter(tmp, character);
+                    RemoveCharacter(tmp);
                     tmp.x = X - 1;
 
                     RemoveCharacter(tmp);
@@ -329,22 +374,28 @@ public class GatherYourPeople : MonoBehaviour
     /// <param name="addedTipology"></param>
     bool CheckCell(ref int totalSimilar, ref int totalDifferent, int X, int Y, Character.tipology addedTipology)
     {
-        if (grid[X, Y] != 0)
+        if (grid[X, Y] != ((int)cellState.EMPTY))
         {
             if (CheckSimilarity(new Vector2(X, Y), addedTipology))
-            {
-                totalSimilar += 1;
-            }
-            else
-            {
-                totalDifferent += 1;
-            }
-
-            return true;
+                return true;
         }
 
         return false;
     }
+
+    bool CheckCell(int X, int Y, Character.tipology addedTipology)
+    {
+        if (grid[X, Y] != ((int)cellState.EMPTY))
+        {
+            if (CheckSimilarity(new Vector2(X, Y), addedTipology))
+                return true;
+        }
+
+        return false;
+    }
+
+
+
     private bool CheckSimilarity(Vector2 values, Character.tipology myTipology)
     {
         if (characterLocations.TryGetValue(values, out CharacterMovement neighbor))
@@ -357,7 +408,7 @@ public class GatherYourPeople : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning("no neigh found when cheking neighbourhood!!!");
+            Debug.LogWarning("No neigh found when cheking neighbourhood!!!");
             return false;
         }
 
