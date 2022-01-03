@@ -112,22 +112,63 @@ public class GatherYourPeople : MonoBehaviour
             // checks for similar character
             int equalFound = S.CalculateCombo(roundedPos, roundedPos, character.character.Tipology, 0, ref foundPos);
 
+            Debug.Log($" Equal found {equalFound}");
             if (equalFound == 3)
             {
                 //make the characters disappear
                 S.MakeCombo(eCombos.h_center, (int)foundPos.x, (int)foundPos.y, character);
+
             }
             return true;
         }
         return false;
     }
+    /// <summary>
+    ///  check if the current cell is full and then moves the cell and all the above downstairs
+    /// </summary>
+    /// <param name="X">X of the cell you want to check to see if it can go down</param>
+    /// <param name="Y">Y of the cell you want to check to see if it can go down</param>
+    private void CheckAndScrollDown(float X, float Y)
+    {
+        Vector2 position = new Vector2(X, Y);
+        int _X = (int)X;
+        int _Y = (int)Y;
+        // check if position is full
+        if (grid[_X, _Y] == ((int)cellState.FULL))
+        {
+            // move down
+            if (characterLocations.TryGetValue(position, out CharacterMovement character))
+            {
+                // remove from position
+                characterLocations.Remove(position);
+                grid[_X, _Y] = ((int)cellState.EMPTY);
+                // move one pos under
+                grid[_X, _Y - 1] = ((int)cellState.FULL);
+                Vector2 newPosition = position;
+                newPosition.y -= 1;
+                characterLocations.Add(newPosition, character);
+                Vector3 newGOposition = new Vector3(position.x, newPosition.y, 0);
+                character.gameObject.transform.position = newGOposition;
+
+                //Debug.Log($" Character in postion X {position.x} and Y: {position.y} removed");
+                // move GO above
+                if (Y + 1 < GRID_DIM_Y)
+                    CheckAndScrollDown(X, Y + 1);
+            }
+            else
+            {
+                Debug.LogError($"Inconsistence between grid and character locations in x:{X} and y:{Y}");
+            }
+        }
+
+    }
 
     public int CalculateCombo(Vector2 currentPos, Vector2 caller, Character.tipology tipology, int similarFound, ref Vector2 foundPos)
     {
 
-        Debug.Log(" checking position " + currentPos + "with similar found " + similarFound);
+        //Debug.Log(" checking position " + currentPos + "with similar found " + similarFound);
 
-        if (CheckSimilarity(currentPos, tipology))
+        if (similarFound < 3 && CheckSimilarity(currentPos, tipology))
         {
             similarFound++;
         }
@@ -141,7 +182,7 @@ public class GatherYourPeople : MonoBehaviour
         {
             // segni la posizione del simile tra i due
             foundPos = caller;
-            Debug.Log(" Match found: it s working  " + foundPos.x + " " + foundPos.y);
+            //Debug.Log(" Match found: it s working  " + foundPos.x + " " + foundPos.y);
             return similarFound;
         }
 
@@ -289,7 +330,6 @@ public class GatherYourPeople : MonoBehaviour
 
                     RemoveCharacter(tmp, character);
                     tmp.x = X + 1;
-
                     RemoveCharacter(tmp);
                     tmp.x = X + 2;
                     RemoveCharacter(tmp);
@@ -314,11 +354,14 @@ public class GatherYourPeople : MonoBehaviour
                     grid[X, Y] = grid[X - 1, Y] = grid[X + 1, Y] = 0;
 
                     RemoveCharacter(tmp);
+                    CheckAndScrollDown(tmp.x, tmp.y + 1);
                     tmp.x = X - 1;
-
                     RemoveCharacter(tmp);
+                    CheckAndScrollDown(tmp.x, tmp.y + 1);
                     tmp.x = X + 1;
                     RemoveCharacter(tmp);
+                    CheckAndScrollDown(tmp.x, tmp.y + 1);
+
                     break;
                 }
             case (eCombos.vertical):
@@ -400,7 +443,7 @@ public class GatherYourPeople : MonoBehaviour
     {
         if (characterLocations.TryGetValue(values, out CharacterMovement neighbor))
         {
-            Debug.Log("Neig found " + neighbor.character.Tipology);
+            //Debug.Log("Neig found " + neighbor.character.Tipology);
             if (neighbor.character.Tipology == myTipology)
                 return true;
             else
