@@ -1,4 +1,4 @@
-#THE DIVERSE GAME 
+#THE DIVERSE GAME
 Part of the Game was made and ideated during the UDCJam#19  https://itch.io/jam/udc-jam-19
 
 #IDEA BEYOND THE Game
