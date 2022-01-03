@@ -8,7 +8,8 @@ this improve society and makes you win the game
 #HOW TO CONTRIBUTE
 A lot of features are missing from this game:
 - Insert lights that enlight the room when many groups with different people are joined togheter
-- make similar people disappear
+- When characters drop down after a match check if similar are found
+- Improve animations that starts only when you press a button
 - add points when diverse people group 
 - stop the game at a certain time or score
 - end the game if the room is fool! 
