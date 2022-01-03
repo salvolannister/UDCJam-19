@@ -36,7 +36,7 @@ public class GatherYourPeople : MonoBehaviour
         h_left = 0,
         h_right = 1,
         h_center = 3,
-        vertical = 4,
+        v_center = 4,
         v_down = 5
     }
 
@@ -110,14 +110,20 @@ public class GatherYourPeople : MonoBehaviour
             //  S.CalculateCombo(roundedPos, character);
             Vector2 foundPos = Vector2.zero;
             // checks for similar character
-            int equalFound = S.CalculateCombo(roundedPos, roundedPos, character.character.Tipology, 0, ref foundPos);
+            int equalFound = S.CheckComboHorizontal(roundedPos, roundedPos, character.character.Tipology, 0, ref foundPos);
 
-            Debug.Log($" Equal found {equalFound}");
+            //Debug.Log($" Equal found {equalFound}");
             if (equalFound == 3)
             {
                 //make the characters disappear
                 S.MakeCombo(eCombos.h_center, (int)foundPos.x, (int)foundPos.y, character);
 
+            }
+            else
+            {
+                equalFound = S.CheckComboVertical(roundedPos, roundedPos, character.character.Tipology, 0, ref foundPos);
+                if (equalFound == 3)
+                    S.MakeCombo(eCombos.v_center, (int)foundPos.x, (int)foundPos.y, character);
             }
             return true;
         }
@@ -163,7 +169,7 @@ public class GatherYourPeople : MonoBehaviour
 
     }
 
-    public int CalculateCombo(Vector2 currentPos, Vector2 caller, Character.tipology tipology, int similarFound, ref Vector2 foundPos)
+    public int CheckComboHorizontal(Vector2 currentPos, Vector2 caller, Character.tipology tipology, int similarFound, ref Vector2 foundPos)
     {
 
         //Debug.Log(" checking position " + currentPos + "with similar found " + similarFound);
@@ -191,21 +197,65 @@ public class GatherYourPeople : MonoBehaviour
         // check right side
         Vector2 nextPos = currentPos;
         nextPos.x += 1;
-        if (!isOutOfBorder(nextPos.x, nextPos.y) && caller != nextPos)
+        if (!IsOutOfBorder(nextPos.x, nextPos.y) && caller != nextPos)
         {
-            similarFound = CalculateCombo(nextPos, currentPos, tipology, similarFound, ref foundPos);
+            similarFound = CheckComboHorizontal(nextPos, currentPos, tipology, similarFound, ref foundPos);
         }
 
         //check left side
         nextPos = currentPos;
         nextPos.x -= 1;
-        if (!isOutOfBorder(nextPos.x, nextPos.y) && caller != nextPos)
+        if (!IsOutOfBorder(nextPos.x, nextPos.y) && caller != nextPos)
         {
-            similarFound = CalculateCombo(nextPos, currentPos, tipology, similarFound, ref foundPos);
+            similarFound = CheckComboHorizontal(nextPos, currentPos, tipology, similarFound, ref foundPos);
         }
 
         return similarFound;
     }
+
+    public int CheckComboVertical(Vector2 currentPos, Vector2 caller, Character.tipology tipology, int similarFound, ref Vector2 foundPos)
+    {
+
+        //Debug.Log(" checking position " + currentPos + "with similar found " + similarFound);
+
+        if (similarFound < 3 && CheckSimilarity(currentPos, tipology))
+        {
+            similarFound++;
+        }
+        else
+        {
+            return similarFound;
+        }
+
+
+        if (similarFound == 3)
+        {
+            foundPos = caller;
+            //Debug.Log(" Match found: it s working  " + foundPos.x + " " + foundPos.y);
+            return similarFound;
+        }
+
+        // check right side
+        Vector2 nextPos = currentPos;
+        nextPos.y += 1;
+        // check only if the position is inside the boreders and nextPos is not the caller pos (avoid checking the pos already checked) 
+        if (!IsOutOfBorder(nextPos.x, nextPos.y) && caller != nextPos)
+        {
+            similarFound = CheckComboVertical(nextPos, currentPos, tipology, similarFound, ref foundPos);
+        }
+
+        //check left side
+        nextPos = currentPos;
+        nextPos.y -= 1;
+        if (!IsOutOfBorder(nextPos.x, nextPos.y) && caller != nextPos)
+        {
+            similarFound = CheckComboVertical(nextPos, currentPos, tipology, similarFound, ref foundPos);
+        }
+
+        return similarFound;
+    }
+
+
 
     /// <summary>
     /// Determines whether [the cell is valid] giving the a position in the grid.
@@ -215,9 +265,9 @@ public class GatherYourPeople : MonoBehaviour
     /// <returns>
     ///   <c>true</c> if [is cell valid] [the specified x]; otherwise, <c>false</c>.
     /// </returns>
-    bool isOutOfBorder(float x, float y)
+    bool IsOutOfBorder(float x, float y)
     {
-        if (x == 7 || x < 0)
+        if ((x == GRID_DIM_X || x < 0) || (y == GRID_DIM_Y || y < 0))
             return true;
         else
             return false;
@@ -270,7 +320,7 @@ public class GatherYourPeople : MonoBehaviour
             else if (CheckCell(ref totalSimilar, ref totalDifferent, X, Y + 1, addedTipology) && CheckCell(ref totalSimilar, ref totalDifferent, X, Y - 1, addedTipology))
             {
                 // make combo 
-                MakeCombo(eCombos.vertical, X, Y, addedCharacter);
+                MakeCombo(eCombos.v_center, X, Y, addedCharacter);
             }
             else if (X - 2 >= 0)
             {
@@ -324,31 +374,7 @@ public class GatherYourPeople : MonoBehaviour
         Vector2 tmp = new Vector2(X, Y);
         switch (comboType)
         {
-            case (eCombos.h_left):
-                {
-                    grid[X, Y] = grid[X + 1, Y] = grid[X + 2, Y] = 0;
 
-                    RemoveCharacter(tmp, character);
-                    tmp.x = X + 1;
-                    RemoveCharacter(tmp);
-                    tmp.x = X + 2;
-                    RemoveCharacter(tmp);
-
-                    // move characters that were above 
-                    break;
-                }
-            case (eCombos.h_right):
-                {
-                    grid[X, Y] = grid[X - 1, Y] = grid[X - 2, Y] = 0;
-
-                    RemoveCharacter(tmp, character);
-                    tmp.x = X - 1;
-
-                    RemoveCharacter(tmp);
-                    tmp.x = X - 2;
-                    RemoveCharacter(tmp);
-                    break;
-                }
             case (eCombos.h_center):
                 {
                     grid[X, Y] = grid[X - 1, Y] = grid[X + 1, Y] = 0;
@@ -364,30 +390,19 @@ public class GatherYourPeople : MonoBehaviour
 
                     break;
                 }
-            case (eCombos.vertical):
+            case (eCombos.v_center):
                 {
                     grid[X, Y] = grid[X, Y - 1] = grid[X, Y + 1] = 0;
 
-                    RemoveCharacter(tmp, character);
+                    RemoveCharacter(tmp);
                     tmp.y = Y + 1;
-
+                    CheckAndScrollDown(tmp.x, tmp.y);
                     RemoveCharacter(tmp);
                     tmp.y = Y - 1;
                     RemoveCharacter(tmp);
                     break;
                 }
-            case (eCombos.v_down):
-                {
-                    grid[X, Y] = grid[X, Y + 1] = grid[X, Y + 2] = 0;
 
-                    RemoveCharacter(tmp, character);
-                    tmp.y = Y + 1;
-
-                    RemoveCharacter(tmp);
-                    tmp.y = Y + 2;
-                    RemoveCharacter(tmp);
-                    break;
-                }
 
 
         }
