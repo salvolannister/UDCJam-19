@@ -466,7 +466,6 @@ public class GatherYourPeople : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning("No neigh found when cheking neighbourhood!!!");
             return false;
         }
 
